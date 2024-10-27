@@ -1,4 +1,22 @@
+export type StoreState = {
+  note: NoteTypes[];
+  deletedNotes: NoteTypes[];
+  isNoteFormOpen: boolean;
+  addNote: (note: NoteTypes) => void;
+  deleteNote: (id: string) => void;
+  openNoteForm: () => void;
+  closeNoteForm: () => void;
+  updateTitle: (id: string, title: string) => void;
+  updateContent: (id: string, content: string) => void;
+  deleteAllNotes: () => void;
+  deleteDeletedNotes: (id: string) => void;
+  restoreDeletedNote: (id: string) => void;
+  restoreAll: () => void;
+  deleteAllDeletedNotes: () => void;
+};
+
 export type NoteTypes = {
+  type: "deleted" | "normal";
   id: string;
   content: string;
   title: string;

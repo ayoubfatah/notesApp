@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
-import useStore from "../zustand /store";
+import useStore from "../zustand/store";
 import { NoteTypes } from "../types/types";
 import { v4 as uuidv4 } from "uuid";
 import { getFormattedDateNowText } from "../utils";
@@ -26,6 +26,7 @@ export default function NoteForm() {
     e.preventDefault();
     if (title.trim() && content.trim()) {
       const newNote: NoteTypes = {
+        type: "normal",
         id: id,
         title,
         content: content,

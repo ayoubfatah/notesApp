@@ -5,20 +5,29 @@ import { getFormattedDateNowText } from "../utils";
 import { useReducer, useState } from "react";
 import { MAX_CONTENT_CHARS, MAX_TITLE_CHARS } from "../const";
 import { toast } from "sonner";
-import useStore from "../zustand /store";
+import useStore from "../zustand/store";
 import { initStates, reducer } from "../reducer";
+import { FiRotateCcw } from "react-icons/fi";
 
 export default function Note({
+  type,
   title,
   content,
-  id,
+  id,   
   date,
   edited = false,
 }: NoteTypes) {
   const [state, dispatch] = useReducer(reducer, initStates);
   const [tempTitle, setTempTitle] = useState(title);
   const [tempContent, setTempContent] = useState(content);
-  const { deleteNote, addNote, updateTitle, updateContent } = useStore();
+  const {
+    deleteNote,
+    addNote,
+    updateTitle,
+    updateContent,
+    deleteDeletedNotes,
+    restoreDeletedNote,
+  } = useStore();
   const duplicatedId = uuidv4();
 
   function handleUpdateTitle() {
@@ -48,6 +57,7 @@ export default function Note({
 
   function duplicateNote() {
     const duplicatedNote: NoteTypes = {
+      type: "normal",
       title: `copy of ${title.slice(-8)}`,
       content,
       id: duplicatedId,
@@ -66,7 +76,7 @@ export default function Note({
             onMouseLeave={() => dispatch({ type: "HIDE_EDIT_TITLE_ICON" })}
             className="flex justify-between w-full"
           >
-            {state.titleInput ? (
+            {state.titleInput && type === "normal" ? (
               <input
                 type="text"
                 value={tempTitle}
@@ -81,7 +91,7 @@ export default function Note({
                 {title}
               </h2>
             )}
-            {state.showTitleEdit && (
+            {state.showTitleEdit && type === "normal" && (
               <button
                 onClick={() => dispatch({ type: "SHOW_EDIT_TITLE_INPUT" })}
                 className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
@@ -91,8 +101,19 @@ export default function Note({
               </button>
             )}
             <div className="inline-flex space-x-2 ml-auto">
+              {type === "deleted" && (
+                <button
+                  onClick={() => restoreDeletedNote(id)}
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
+                  aria-label="restore note"
+                >
+                  <FiRotateCcw className="w-5 h-5" />
+                </button>
+              )}
               <button
-                onClick={() => deleteNote(id)}
+                onClick={() =>
+                  type === "normal" ? deleteNote(id) : deleteDeletedNotes(id)
+                }
                 className="text-gray-400 hover:text-red-400 transition-colors duration-200"
                 aria-label="Delete note"
               >
@@ -111,7 +132,7 @@ export default function Note({
             onMouseEnter={() => dispatch({ type: "SHOW_EDIT_CONTENT_ICON" })}
             onMouseLeave={() => dispatch({ type: "HIDE_EDIT_CONTENT_ICON" })}
           >
-            {state.contentInput ? (
+            {state.contentInput && type === "normal" ? (
               <textarea
                 maxLength={MAX_CONTENT_CHARS}
                 id="content"
@@ -126,7 +147,7 @@ export default function Note({
             ) : (
               <p className="text-gray-200  py-3 w-full break-words">
                 {content}
-                {state.showContentEdit && (
+                {state.showContentEdit && type === "normal" && (
                   <button
                     onClick={() =>
                       dispatch({ type: "SHOW_EDIT_CONTENT_INPUT" })

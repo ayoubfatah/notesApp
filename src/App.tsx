@@ -1,13 +1,14 @@
 import Header from "./components/Header";
 import NoteForm from "./components/InputForm";
-import Note from "./components/Note";
 
-import useStore from "./zustand /store";
-import { NoteTypes } from "./types/types";
+import useStore from "./zustand/store";
+
 import { Toaster } from "sonner";
+import DeletedNotes from "./components/DeletedNotes";
+import Notes from "./components/Notes";
 
 function App() {
-  const { note, openNoteForm } = useStore();
+  const { openNoteForm, deleteAllNotes } = useStore();
 
   return (
     <>
@@ -23,26 +24,24 @@ function App() {
           <h2 className=" uppercase md:text-5xl font-bold">
             Notes With Zustand
           </h2>
-          <button
-            onClick={() => openNoteForm()}
-            className="px-4 py-2 bg-slate-700 text-white rounded-md hover:bg-slate-600 transition-colors duration-200"
-          >
-            Add New Note
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => openNoteForm()}
+              className="px-4 py-2 bg-slate-700 text-white rounded-md hover:bg-slate-600 transition-colors duration-200"
+            >
+              Add New Note
+            </button>
+            <button
+              onClick={() => deleteAllNotes()}
+              className="px-4 py-2 bg-slate-700 text-white rounded-md hover:bg-slate-600 transition-colors duration-200"
+            >
+              Delete all Notes
+            </button>
+          </div>
           <NoteForm />
         </Header>
-        <div className="grid grid-cols-[repeat(1,_350px)]   md:grid-cols-[repeat(3,_350px)]  gap-5  my-5  ">
-          {note.map((n: NoteTypes) => (
-            <Note
-              edited={n.edited}
-              key={n.id}
-              id={n.id}
-              title={n.title}
-              content={n.content}
-              date={n.date}
-            />
-          ))}
-        </div>
+        <Notes />
+        <DeletedNotes />
       </main>
     </>
   );
