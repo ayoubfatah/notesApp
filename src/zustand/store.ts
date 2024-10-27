@@ -34,6 +34,9 @@ const useStore = create<StoreState>((set) => ({
   note: storage.load(STORAGE_KEYS.NOTES),
   deletedNotes: storage.load(STORAGE_KEYS.DELETED_NOTES),
   isNoteFormOpen: false,
+  draggedNote: null,
+  dragSource: null,
+  dragTarget: null,
   //
   openNoteForm: () => set({ isNoteFormOpen: true }),
   closeNoteForm: () => set({ isNoteFormOpen: false }),
@@ -136,6 +139,37 @@ const useStore = create<StoreState>((set) => ({
         notify.success("Notes have been Restored");
       }
       return { deletedNotes: [], note: [...state.note, ...state.deletedNotes] };
+    }),
+
+  setDraggedNote: (note) => set({ draggedNote: note }),
+  setDragSource: (source) => set({ dragSource: source }),
+  setDragTarget: (target) => set({ dragTarget: target }),
+  moveNoteToDeleted: (noteId) =>
+    set((state) => {
+      const noteToMove = state.note.find((n) => n.id === noteId);
+      if (!noteToMove) return state;
+      notify.success("Note has been deleted Successfully ");
+
+      return {
+        note: state.note.filter((n) => n.id !== noteId),
+        deletedNotes: [
+          ...state.deletedNotes,
+          { ...noteToMove, deletedAt: new Date().toISOString() },
+        ],
+      };
+    }),
+  restoreNote: (noteId) =>
+    set((state) => {
+      const noteToRestore = state.deletedNotes.find((n) => n.id === noteId);
+      if (!noteToRestore) return state;
+      notify.success("Note has been restored Successfully ");
+      return {
+        deletedNotes: state.deletedNotes.filter((n) => n.id !== noteId),
+        note: [
+          ...state.note,
+          { ...noteToRestore, restoredAt: new Date().toISOString() },
+        ],
+      };
     }),
 }));
 

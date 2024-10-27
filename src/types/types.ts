@@ -13,6 +13,16 @@ export type StoreState = {
   restoreDeletedNote: (id: string) => void;
   restoreAll: () => void;
   deleteAllDeletedNotes: () => void;
+  draggedNote: NoteTypes | null;
+  dragSource: "active" | "deleted" | null;
+  dragTarget: "active" | "deleted" | null;
+
+  // Actions
+  setDraggedNote: (note: NoteTypes | null) => void;
+  setDragSource: (source: "active" | "deleted" | null) => void;
+  setDragTarget: (target: "active" | "deleted" | null) => void;
+  moveNoteToDeleted: (noteId: string) => void;
+  restoreNote: (noteId: string) => void;
 };
 
 export type NoteTypes = {

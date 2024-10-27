@@ -3,7 +3,34 @@ import { NoteTypes } from "../types/types";
 import useStore from "../zustand/store";
 
 export default function DeletedNotes() {
-  const { deletedNotes, deleteAllDeletedNotes, restoreAll } = useStore();
+  const {
+    deletedNotes,
+    deleteAllDeletedNotes,
+    restoreAll,
+    setDragTarget,
+    moveNoteToDeleted,
+    restoreNote,
+  } = useStore();
+  const handleDragOver = (e: React.DragEvent, target: "active" | "deleted") => {
+    e.preventDefault();
+    setDragTarget(target);
+  };
+  const handleDragLeave = () => {
+    setDragTarget(null);
+  };
+  const handleDrop = (e: React.DragEvent, target: "active" | "deleted") => {
+    e.preventDefault();
+    const draggedNoteId = e.dataTransfer.getData("noteId");
+
+    if (target === "deleted") {
+      moveNoteToDeleted(draggedNoteId);
+    } else {
+      restoreNote(draggedNoteId);
+    }
+
+    setDragTarget(null);
+  };
+
   return (
     <div className="mt-3">
       <div>
@@ -20,7 +47,12 @@ export default function DeletedNotes() {
           </li>
         </ul>
       </div>
-      <div className="grid grid-cols-[repeat(1,_350px)]   md:grid-cols-[repeat(3,_350px)]  gap-5  my-5  ">
+      <div
+        onDragOver={(e) => handleDragOver(e, "deleted")}
+        onDragLeave={handleDragLeave}
+        onDrop={(e) => handleDrop(e, "deleted")}
+        className="grid grid-cols-[repeat(1,_350px)]   md:grid-cols-[repeat(3,_350px)]  gap-5  my-5  "
+      >
         {deletedNotes.map((n: NoteTypes) => (
           <Note
             type="deleted"

@@ -13,13 +13,14 @@ export default function Note({
   type,
   title,
   content,
-  id,   
+  id,
   date,
   edited = false,
 }: NoteTypes) {
   const [state, dispatch] = useReducer(reducer, initStates);
   const [tempTitle, setTempTitle] = useState(title);
   const [tempContent, setTempContent] = useState(content);
+
   const {
     deleteNote,
     addNote,
@@ -27,6 +28,8 @@ export default function Note({
     updateContent,
     deleteDeletedNotes,
     restoreDeletedNote,
+    setDraggedNote,
+    setDragSource,
   } = useStore();
   const duplicatedId = uuidv4();
 
@@ -55,6 +58,17 @@ export default function Note({
     dispatch({ type: "HIDE_EDIT_CONTENT_INPUT" });
   }
 
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("noteId", id);
+    setDraggedNote({ id, title, content, date, edited, type });
+    setDragSource(type === "normal" ? "active" : "deleted");
+  };
+
+  const handleDragEnd = () => {
+    setDraggedNote(null);
+    setDragSource(null);
+  };
+
   function duplicateNote() {
     const duplicatedNote: NoteTypes = {
       type: "normal",
@@ -68,7 +82,12 @@ export default function Note({
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg p-4 shadow-lg transition-all duration-300 hover:shadow-xl relative">
+    <div
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className="bg-gray-800 rounded-lg p-4 shadow-lg transition-all duration-300 hover:shadow-xl relative"
+    >
       <div className="flex justify-between items-start mb-4">
         <div className="flex flex-col gap-2 w-full">
           <div
