@@ -3,14 +3,12 @@ export type StoreState = {
   deletedNotes: NoteTypes[];
   isNoteFormOpen: boolean;
   addNote: (note: NoteTypes) => void;
-  deleteNote: (id: string) => void;
   openNoteForm: () => void;
   closeNoteForm: () => void;
   updateTitle: (id: string, title: string) => void;
   updateContent: (id: string, content: string) => void;
   deleteAllNotes: () => void;
   deleteDeletedNotes: (id: string) => void;
-  restoreDeletedNote: (id: string) => void;
   restoreAll: () => void;
   deleteAllDeletedNotes: () => void;
   draggedNote: NoteTypes | null;
@@ -23,6 +21,7 @@ export type StoreState = {
   setDragTarget: (target: "active" | "deleted" | null) => void;
   moveNoteToDeleted: (noteId: string) => void;
   restoreNote: (noteId: string) => void;
+  reorderNotes: (newOrder: NoteTypes[]) => void;
 };
 
 export type NoteTypes = {

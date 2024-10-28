@@ -21,5 +21,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "notesApp-main - Copie/src"]
+  "include": ["src", "src/components", "notesApp-main - Copie/src"]
 }

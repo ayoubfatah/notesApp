@@ -22,12 +22,12 @@ export default function Note({
   const [tempContent, setTempContent] = useState(content);
 
   const {
-    deleteNote,
     addNote,
     updateTitle,
     updateContent,
     deleteDeletedNotes,
-    restoreDeletedNote,
+    restoreNote,
+    moveNoteToDeleted,
     setDraggedNote,
     setDragSource,
   } = useStore();
@@ -122,7 +122,7 @@ export default function Note({
             <div className="inline-flex space-x-2 ml-auto">
               {type === "deleted" && (
                 <button
-                  onClick={() => restoreDeletedNote(id)}
+                  onClick={() => restoreNote(id)}
                   className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
                   aria-label="restore note"
                 >
@@ -131,7 +131,9 @@ export default function Note({
               )}
               <button
                 onClick={() =>
-                  type === "normal" ? deleteNote(id) : deleteDeletedNotes(id)
+                  type === "normal"
+                    ? moveNoteToDeleted(id)
+                    : deleteDeletedNotes(id)
                 }
                 className="text-gray-400 hover:text-red-400 transition-colors duration-200"
                 aria-label="Delete note"

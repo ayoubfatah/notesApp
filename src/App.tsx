@@ -8,7 +8,7 @@ import DeletedNotes from "./components/DeletedNotes";
 import Notes from "./components/Notes";
 
 function App() {
-  const { openNoteForm, deleteAllNotes } = useStore();
+  const { openNoteForm, deleteAllNotes, deletedNotes, note } = useStore();
 
   return (
     <>
@@ -40,8 +40,8 @@ function App() {
           </div>
           <NoteForm />
         </Header>
-        <Notes />
-        <DeletedNotes />
+        {note.length > 0 ? <Notes /> : null}
+        {deletedNotes.length > 0 ? <DeletedNotes /> : null}
       </main>
     </>
   );
